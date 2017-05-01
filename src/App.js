@@ -1,7 +1,10 @@
+// @flow
+
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Canvas from './Canvas'
+import Controls from './Controls'
 
 class App extends Component {
   render() {
@@ -15,7 +18,15 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
 
-        <Canvas />
+        <Canvas arms={
+          [
+            { radius: 70, speed: 2 * Math.PI / 400 },
+            { radius: 50, speed: 2 * Math.PI / 90 },
+            { radius: 80, speed: 2 * Math.PI / 200 },
+            { radius: 50, speed: 2 * Math.PI / 100 }
+          ]
+        }/>
+        <Controls arms={[12, 23, 41, 123, 34]} />
       </div>
     );
   }
