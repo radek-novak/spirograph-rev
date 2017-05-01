@@ -36,10 +36,12 @@ class App extends Component<void, void, any> {
     return (
       <div className="App">
 
-        <label>
-          <input type="checkbox" value={this.state.showArms} onClick={this.toggleArm} />
-          show pendulum arms
-        </label>
+        <div>
+          <label>
+            <input type="checkbox" value={this.state.showArms} onClick={this.toggleArm} />
+            show pendulum arms
+          </label>
+        </div>
 
         <Canvas
           showArms={this.state.showArms}
