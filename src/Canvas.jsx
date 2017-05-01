@@ -6,7 +6,13 @@ import Victor from 'victor'
 import * as Pendulum from './Pendulum'
 
 
-type tVictor = {x: number, y: number}
+type tVictor = {
+  x: number,
+  y: number,
+  rotate: (number) => tVictor,
+  add: (tVictor) => tVictor,
+  clone: () => tVictor
+}
 type Props = {
   arms: Array<{ speed: number, radius: number}>
 }
@@ -15,11 +21,13 @@ class Canvas extends Component<void, Props, any> {
   lines: Array<any>
   points: Array<tVictor>
   ctx: any
-  tick: number
   cx: number
   cy: number
   canvas: any
   vCenter: tVictor
+  pendulumPoints: Array<tVictor>
+  pendulum: Array<tVictor>
+  speeds: Array<number>
 
 
   constructor() {
@@ -38,15 +46,15 @@ class Canvas extends Component<void, Props, any> {
     this.cy = this.canvas.height / 2
     this.vCenter = new Victor(this.canvas.width / 2, this.canvas.height / 2)
 
-    this.tick = 0
-
-
-    this.pendulum = Pendulum.buildPendulum(arms.map(arm => arm.radius), this.vCenter)
+    this.pendulumPoints =Pendulum.buildPendulumPoints(
+      Pendulum.getScaledPoints(arms.map(arm => arm.radius),
+      Math.min(this.canvas.width, this.canvas.height))
+    )
+    this.pendulum = Pendulum.buildPendulum(this.pendulumPoints)
+    this.speeds = [0, ...arms.map(arm => arm.speed)]
 
     requestAnimationFrame(this.loop.bind(this))
   }
-
-
 
   line(v1: tVictor, v2: tVictor) {
     this.ctx.beginPath();
@@ -55,41 +63,32 @@ class Canvas extends Component<void, Props, any> {
     this.ctx.stroke();
   }
 
-  hand(radius: number, angle: number, vector: tVictor = this.vCenter) {
-    const vec = new Victor(0, -radius)
-    vec.rotate(angle)
-    vec.add(vector)
+  drawPendulum() {
+    this.ctx.beginPath();
 
-    this.line(
-      vector,
-      vec
-    )
+    for ( let i = 1; i < this.pendulum.length; i++ ) {
+      const prev = this.pendulum[i - 1]
+      const cur = this.pendulum[i]
 
-    return vec
+      this.ctx.moveTo(prev.x, prev.y);
+      this.ctx.lineTo(cur.x, cur.y)
+    }
+
+    this.ctx.stroke();
   }
 
   loop() {
-    const { arms } = this.props;
-
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.tick++
 
+    this.pendulumPoints = Pendulum.rotatePoints(this.pendulumPoints, this.speeds)
+    this.pendulum = Pendulum.buildPendulum(this.pendulumPoints, this.vCenter)
+    this.drawPendulum()
 
-    for ( let i = 0; i < arms.length; i++ ) {
-      const cur = arms[i]
-      const v = this.hand(70, this.tick * (2 * Math.PI) / 400)
-    }
-
-    const v = this.hand(arms[0].radius, this.tick * arms[0].speed)
-    const v2 = this.hand(50, this.tick * (2 * Math.PI) / 90, v)
-    const v3 = this.hand(80, this.tick * (2 * Math.PI) / 200, v2)
-    const v4 = this.hand(50, this.tick * (2 * Math.PI) / 100, v3)
-
-    for (let i = 1; i < this.lines.length; i++) {
+    this.lines.push(this.pendulum.slice(-1)[0])
+    for (let i = 1, len = this.lines.length; i < len; i++) {
       this.line(this.lines[i - 1], this.lines[i])
     }
 
-    this.lines.push(v4)
 
     requestAnimationFrame(this.loop.bind(this))
   }

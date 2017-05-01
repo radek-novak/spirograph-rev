@@ -22,8 +22,9 @@ class App extends Component {
           [
             { radius: 70, speed: 2 * Math.PI / 400 },
             { radius: 50, speed: 2 * Math.PI / 90 },
+            { radius: 40, speed: 2 * Math.PI / 190 },
             { radius: 80, speed: 2 * Math.PI / 200 },
-            { radius: 50, speed: 2 * Math.PI / 100 }
+            { radius: 45, speed: 2 * Math.PI / 100 }
           ]
         }/>
         <Controls arms={[12, 23, 41, 123, 34]} />
