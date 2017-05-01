@@ -14,8 +14,10 @@ type tVictor = {
   clone: () => tVictor
 }
 type Props = {
-  arms: Array<{ speed: number, radius: number}>
+  arms: Array<{ speed: number, radius: number}>,
+  showArms: bool
 }
+
 
 class Canvas extends Component<void, Props, any> {
   lines: Array<any>
@@ -56,6 +58,18 @@ class Canvas extends Component<void, Props, any> {
 
     this.raf = requestAnimationFrame(this.loop.bind(this))
   }
+
+  componentWillReceiveProps(nextProps: {showArms: bool}) {
+    if (nextProps.showArms !== this.props.showArms && !nextProps.showArms) {
+      cancelAnimationFrame(this.raf)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+      this.drawVectors(this.lines)
+
+      this.raf = requestAnimationFrame(this.loop.bind(this))
+    }
+  }
+
 
   line(v1: tVictor, v2: tVictor) {
     this.ctx.beginPath();
