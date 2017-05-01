@@ -19,7 +19,6 @@ type Props = {
 
 class Canvas extends Component<void, Props, any> {
   lines: Array<any>
-  points: Array<tVictor>
   ctx: any
   cx: number
   cy: number
@@ -36,13 +35,14 @@ class Canvas extends Component<void, Props, any> {
 
     this.state = {}
     this.lines = []
-    this.points = []
   }
 
   componentDidMount() {
     const { arms } = this.props
 
     this.ctx = this.canvas.getContext('2d')
+    // this.ctx.translate(0.5, 0.5);
+
     this.cx = this.canvas.width / 2
     this.cy = this.canvas.height / 2
     this.vCenter = new Victor(this.canvas.width / 2, this.canvas.height / 2)
@@ -64,12 +64,12 @@ class Canvas extends Component<void, Props, any> {
     this.ctx.stroke();
   }
 
-  drawPendulum() {
+  drawVectors(vectors) {
     this.ctx.beginPath();
 
-    for ( let i = 1; i < this.pendulum.length; i++ ) {
-      const prev = this.pendulum[i - 1]
-      const cur = this.pendulum[i]
+    for ( let i = 1; i < vectors.length; i++ ) {
+      const prev = vectors[i - 1]
+      const cur = vectors[i]
 
       this.ctx.moveTo(prev.x, prev.y);
       this.ctx.lineTo(cur.x, cur.y)
@@ -78,20 +78,26 @@ class Canvas extends Component<void, Props, any> {
     this.ctx.stroke();
   }
 
+  drawLastSegment() {
+    this.line(this.lines.slice(-2)[0], this.lines.slice(-1)[0])
+  }
+
   loop() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (this.props.showArms)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     this.pendulumPoints = Pendulum.rotatePoints(this.pendulumPoints, this.speeds)
     this.pendulum = Pendulum.buildPendulum(this.pendulumPoints, this.vCenter)
 
     if (this.props.showArms)
-      this.drawPendulum()
+      this.drawVectors(this.pendulum)
 
     this.lines.push(this.pendulum.slice(-1)[0])
-    for (let i = 1, len = this.lines.length; i < len; i++) {
-      this.line(this.lines[i - 1], this.lines[i])
-    }
 
+    if (this.props.showArms)
+      this.drawVectors(this.lines)
+    else if (this.lines.length > 1)
+      this.drawLastSegment()
 
     this.raf = requestAnimationFrame(this.loop.bind(this))
   }
