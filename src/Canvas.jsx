@@ -28,6 +28,7 @@ class Canvas extends Component<void, Props, any> {
   pendulumPoints: Array<tVictor>
   pendulum: Array<tVictor>
   speeds: Array<number>
+  raf: any
 
 
   constructor() {
@@ -53,7 +54,7 @@ class Canvas extends Component<void, Props, any> {
     this.pendulum = Pendulum.buildPendulum(this.pendulumPoints)
     this.speeds = [0, ...arms.map(arm => arm.speed)]
 
-    requestAnimationFrame(this.loop.bind(this))
+    this.raf = requestAnimationFrame(this.loop.bind(this))
   }
 
   line(v1: tVictor, v2: tVictor) {
@@ -82,7 +83,9 @@ class Canvas extends Component<void, Props, any> {
 
     this.pendulumPoints = Pendulum.rotatePoints(this.pendulumPoints, this.speeds)
     this.pendulum = Pendulum.buildPendulum(this.pendulumPoints, this.vCenter)
-    this.drawPendulum()
+
+    if (this.props.showArms)
+      this.drawPendulum()
 
     this.lines.push(this.pendulum.slice(-1)[0])
     for (let i = 1, len = this.lines.length; i < len; i++) {
@@ -90,7 +93,7 @@ class Canvas extends Component<void, Props, any> {
     }
 
 
-    requestAnimationFrame(this.loop.bind(this))
+    this.raf = requestAnimationFrame(this.loop.bind(this))
   }
 
 

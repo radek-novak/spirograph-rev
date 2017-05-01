@@ -6,27 +6,46 @@ import './App.css';
 import Canvas from './Canvas'
 import Controls from './Controls'
 
-class App extends Component {
+class App extends Component<void, void, any> {
+  toggleArm: () => mixed
+
+  constructor() {
+    super()
+
+    this.state = {
+      showArms: false
+    }
+
+    this.toggleArm = this.toggleArm.bind(this)
+  }
+
+  toggleArm() {
+    this.setState({
+      showArms: !this.state.showArms
+    })
+  }
+
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
 
-        <Canvas arms={
-          [
-            { radius: 70, speed: 2 * Math.PI / 400 },
-            { radius: 50, speed: 2 * Math.PI / 90 },
-            { radius: 40, speed: 2 * Math.PI / 190 },
-            { radius: 80, speed: 2 * Math.PI / 200 },
-            { radius: 45, speed: 2 * Math.PI / 100 }
-          ]
-        }/>
+        <label>
+          <input type="checkbox" value={this.state.showArms} onClick={this.toggleArm} />
+          show pendulum arms
+        </label>
+
+        <Canvas
+          showArms={this.state.showArms}
+          arms={
+            [
+              { radius: 70, speed: 2 * Math.PI / 400 },
+              { radius: 50, speed: 2 * Math.PI / 90 },
+              { radius: 40, speed: 2 * Math.PI / 190 },
+              { radius: 80, speed: 2 * Math.PI / 200 },
+              { radius: 45, speed: 2 * Math.PI / 100 }
+            ]
+          }
+        />
         <Controls arms={[12, 23, 41, 123, 34]} />
       </div>
     );
