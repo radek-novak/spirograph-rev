@@ -13,7 +13,14 @@ class App extends Component<void, void, any> {
     super()
 
     this.state = {
-      showArms: false
+      showArms: false,
+      arms: [
+        { radius: 70, speed: 2 * Math.PI / 400 },
+        { radius: 50, speed: 2 * Math.PI / 90 },
+        { radius: 40, speed: 2 * Math.PI / 190 },
+        { radius: 80, speed: 2 * Math.PI / 200 },
+        { radius: 45, speed: 2 * Math.PI / 100 }
+      ]
     }
 
     this.toggleArm = this.toggleArm.bind(this)
@@ -36,17 +43,10 @@ class App extends Component<void, void, any> {
 
         <Canvas
           showArms={this.state.showArms}
-          arms={
-            [
-              { radius: 70, speed: 2 * Math.PI / 400 },
-              { radius: 50, speed: 2 * Math.PI / 90 },
-              { radius: 40, speed: 2 * Math.PI / 190 },
-              { radius: 80, speed: 2 * Math.PI / 200 },
-              { radius: 45, speed: 2 * Math.PI / 100 }
-            ]
-          }
+          arms={ this.state.arms }
         />
-        <Controls arms={[12, 23, 41, 123, 34]} />
+
+        <Controls arms={this.state.arms} />
       </div>
     );
   }

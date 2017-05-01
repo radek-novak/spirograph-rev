@@ -24,7 +24,7 @@ class Canvas extends Component<void, Props, any> {
   ctx: any
   cx: number
   cy: number
-  canvas: any
+  canvas: HTMLCanvasElement
   vCenter: tVictor
   pendulumPoints: Array<tVictor>
   pendulum: Array<tVictor>
@@ -59,6 +59,12 @@ class Canvas extends Component<void, Props, any> {
     this.raf = requestAnimationFrame(this.loop.bind(this))
   }
 
+  componentWillMount() {
+    this.setState({
+      canvasSize: Math.min(window.innerWidth, window.innerHeight)
+    })
+  }
+
   componentWillReceiveProps(nextProps: {showArms: bool}) {
     if (nextProps.showArms !== this.props.showArms && !nextProps.showArms) {
       cancelAnimationFrame(this.raf)
@@ -72,24 +78,28 @@ class Canvas extends Component<void, Props, any> {
 
 
   line(v1: tVictor, v2: tVictor) {
-    this.ctx.beginPath();
-    this.ctx.moveTo(v1.x, v1.y);
-    this.ctx.lineTo(v2.x, v2.y)
-    this.ctx.stroke();
+    const { ctx } = this
+
+    ctx.beginPath()
+    ctx.moveTo(v1.x, v1.y)
+    ctx.lineTo(v2.x, v2.y)
+    ctx.stroke();
   }
 
   drawVectors(vectors) {
-    this.ctx.beginPath();
+    const { ctx } = this
+
+    ctx.beginPath();
 
     for ( let i = 1; i < vectors.length; i++ ) {
       const prev = vectors[i - 1]
       const cur = vectors[i]
 
-      this.ctx.moveTo(prev.x, prev.y);
-      this.ctx.lineTo(cur.x, cur.y)
+      ctx.moveTo(prev.x, prev.y);
+      ctx.lineTo(cur.x, cur.y)
     }
 
-    this.ctx.stroke();
+    ctx.stroke();
   }
 
   drawLastSegment() {
@@ -121,8 +131,8 @@ class Canvas extends Component<void, Props, any> {
     return (
       <canvas
         ref={ canvas => this.canvas = canvas }
-        width="500"
-        height="500"
+        width={this.state.canvasSize}
+        height={this.state.canvasSize}
       ></canvas>
     );
   }
