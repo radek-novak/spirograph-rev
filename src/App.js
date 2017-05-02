@@ -15,11 +15,11 @@ class App extends Component<void, void, any> {
     this.state = {
       showArms: false,
       arms: [
-        { radius: 70, speed: 40 * Math.PI / 1000 },
-        { radius: 50, speed: 9 * Math.PI / 1000 },
-        { radius: 40, speed: 19 * Math.PI / 1000 },
-        { radius: 80, speed: 20 * Math.PI / 1000 },
-        { radius: 45, speed: 10 * Math.PI / 1000 }
+        { radius: 70, speed: 40 },
+        { radius: 50, speed: 9 },
+        { radius: 40, speed: 19 },
+        { radius: 80, speed: 20 },
+        { radius: 45, speed: 10 }
       ]
     }
 

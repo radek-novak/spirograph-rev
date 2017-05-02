@@ -38,7 +38,7 @@ function buildPendulum(pendulumPoints: Array<tVictor>, cx: tVictor = new Victor(
 }
 
 function rotatePoints(pendulumPoints: Array<tVictor>, rotations: Array<number>): Array<tVictor> {
-  return cloneDeep(pendulumPoints).map((pt, i) => pt.rotate(rotations[i]))
+  return cloneDeep(pendulumPoints).map((pt, i) => pt.rotate(rotations[i] * Math.PI / 1000))
 }
 
 
