@@ -23,8 +23,9 @@ class Controls extends Component<any, Props, any> {
   }
 
   addField() {
+    const { arms } = this.state
     this.setState({
-      arms: [ ...this.state.arms, 10]
+      arms: [ ...this.state.arms, arms.slice(-1)[0] ]
     })
   }
 
