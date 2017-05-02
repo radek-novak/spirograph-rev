@@ -49,12 +49,7 @@ class Canvas extends Component<void, Props, any> {
     this.cy = this.canvas.height / 2
     this.vCenter = new Victor(this.canvas.width / 2, this.canvas.height / 2)
 
-    this.pendulumPoints =Pendulum.buildPendulumPoints(
-      Pendulum.getScaledPoints(arms.map(arm => arm.radius),
-      Math.min(this.canvas.width, this.canvas.height))
-    )
-    this.pendulum = Pendulum.buildPendulum(this.pendulumPoints)
-    this.speeds = [0, ...arms.map(arm => arm.speed)]
+    this.setUpPendulum()
 
     this.raf = requestAnimationFrame(this.loop.bind(this))
   }
@@ -65,17 +60,33 @@ class Canvas extends Component<void, Props, any> {
     })
   }
 
-  componentWillReceiveProps(nextProps: {showArms: bool}) {
+  componentWillReceiveProps(nextProps: {showArms: bool, arms: Array<any>}) {
     if (nextProps.showArms !== this.props.showArms && !nextProps.showArms) {
       cancelAnimationFrame(this.raf)
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-
       this.drawVectors(this.lines)
-
       this.raf = requestAnimationFrame(this.loop.bind(this))
     }
+
+    if (nextProps.arms !== this.props.arms) {
+      cancelAnimationFrame(this.raf)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.setUpPendulum(nextProps.arms)
+      this.drawVectors(this.lines)
+      this.raf = requestAnimationFrame(this.loop.bind(this))
+    }
+
   }
 
+  setUpPendulum(arms : Array<any> = this.props.arms) {
+    this.pendulumPoints = Pendulum.buildPendulumPoints(
+      Pendulum.getScaledPoints(arms.map(arm => arm.radius),
+      Math.min(this.canvas.width, this.canvas.height))
+    )
+    this.pendulum = Pendulum.buildPendulum(this.pendulumPoints)
+    this.speeds = [0, ...arms.map(arm => arm.speed)]
+    this.lines = []
+  }
 
   line(v1: tVictor, v2: tVictor) {
     const { ctx } = this
