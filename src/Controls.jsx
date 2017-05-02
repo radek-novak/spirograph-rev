@@ -11,11 +11,13 @@ class Controls extends Component<any, Props, any> {
   addField: () => mixed
   changeradius: (number, number) => void
   changespeed: (number, number) => void
+  removeField: (number) => void
 
   constructor() {
     super();
 
     this.addField = this.addField.bind(this)
+    this.removeField = this.removeField.bind(this)
   }
 
   componentWillMount() {
@@ -26,6 +28,17 @@ class Controls extends Component<any, Props, any> {
     const { arms } = this.state
     this.setState({
       arms: [ ...this.state.arms, arms.slice(-1)[0] ]
+    })
+  }
+
+  removeField(index: number) {
+    const { arms } = this.state
+
+    const newArms = cloneDeep(arms)
+    newArms.splice(index, 1)
+
+    this.setState({
+      arms: newArms
     })
   }
 
@@ -74,6 +87,7 @@ class Controls extends Component<any, Props, any> {
                   onChange={ evt => this.changespeed(i, evt.target.value) }
                   value={ this.state.arms[i].speed}
                 />
+                <button onClick={() => this.removeField(i)}>remove</button>
               </div>
             ))
           }
