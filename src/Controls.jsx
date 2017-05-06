@@ -27,7 +27,7 @@ class Controls extends Component<any, Props, any> {
   addField() {
     const { arms } = this.state
     this.setState({
-      arms: [ ...this.state.arms, arms.slice(-1)[0] ]
+      arms: [ ...this.state.arms, cloneDeep(arms.slice(-1)[0]) ]
     })
   }
 
@@ -43,9 +43,10 @@ class Controls extends Component<any, Props, any> {
   }
 
   changeradius(fieldIndex: number, value: number) {
+    console.log(fieldIndex, value);
     const newArms = cloneDeep(this.state.arms)
     newArms[fieldIndex].radius = +value
-
+console.log(newArms[1] === newArms[2]);
     this.setState({
       arms: newArms
     })
@@ -87,7 +88,7 @@ class Controls extends Component<any, Props, any> {
                   onChange={ evt => this.changespeed(i, evt.target.value) }
                   value={ this.state.arms[i].speed}
                 />
-                <button onClick={() => this.removeField(i)}>remove</button>
+                <button type="button" onClick={() => this.removeField(i)}>remove</button>
               </div>
             ))
           }

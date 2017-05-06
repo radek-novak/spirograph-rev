@@ -40,8 +40,6 @@ class Canvas extends Component<void, Props, any> {
   }
 
   componentDidMount() {
-    const { arms } = this.props
-
     this.ctx = this.canvas.getContext('2d')
     // this.ctx.translate(0.5, 0.5);
 
