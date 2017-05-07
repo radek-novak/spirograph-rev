@@ -43,10 +43,9 @@ class Controls extends Component<any, Props, any> {
   }
 
   changeradius(fieldIndex: number, value: number) {
-    console.log(fieldIndex, value);
     const newArms = cloneDeep(this.state.arms)
     newArms[fieldIndex].radius = +value
-console.log(newArms[1] === newArms[2]);
+
     this.setState({
       arms: newArms
     })

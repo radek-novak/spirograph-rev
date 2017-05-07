@@ -20,7 +20,7 @@ type Props = {
 
 
 class Canvas extends Component<void, Props, any> {
-  lines: Array<any>
+  lines: Array<tVictor>
   ctx: any
   cx: number
   cy: number
@@ -58,7 +58,7 @@ class Canvas extends Component<void, Props, any> {
     })
   }
 
-  componentWillReceiveProps(nextProps: {showArms: bool, arms: Array<any>}) {
+  componentWillReceiveProps(nextProps: Props) {
     if (nextProps.showArms !== this.props.showArms && !nextProps.showArms) {
       cancelAnimationFrame(this.raf)
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
