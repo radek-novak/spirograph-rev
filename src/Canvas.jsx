@@ -15,7 +15,8 @@ type tVictor = {
 }
 type Props = {
   arms: Array<{ speed: number, radius: number}>,
-  showArms: bool
+  showArms: bool,
+  playing: bool
 }
 
 
@@ -60,20 +61,34 @@ class Canvas extends Component<void, Props, any> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.showArms !== this.props.showArms && !nextProps.showArms) {
-      cancelAnimationFrame(this.raf)
+      this.stopAnim()
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.drawVectors(this.lines)
-      this.raf = requestAnimationFrame(this.loop.bind(this))
+      this.startAnim()
     }
 
     if (nextProps.arms !== this.props.arms) {
-      cancelAnimationFrame(this.raf)
+      this.stopAnim()
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.setUpPendulum(nextProps.arms)
       this.drawVectors(this.lines)
-      this.raf = requestAnimationFrame(this.loop.bind(this))
+      this.startAnim()
     }
 
+  }
+
+  componentDidUpdate() {
+    if (!this.props.playing) this.stopAnim()
+    else this.startAnim()
+  }
+
+  startAnim() {
+    cancelAnimationFrame(this.raf)
+    this.raf = requestAnimationFrame(this.loop.bind(this))
+  }
+
+  stopAnim() {
+    cancelAnimationFrame(this.raf)
   }
 
   setUpPendulum(arms : Array<any> = this.props.arms) {
@@ -132,7 +147,8 @@ class Canvas extends Component<void, Props, any> {
     else if (this.lines.length > 1)
       this.drawLastSegment()
 
-    this.raf = requestAnimationFrame(this.loop.bind(this))
+    if (this.props.playing)
+      this.startAnim()
   }
 
 
